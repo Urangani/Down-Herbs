@@ -1000,6 +1000,9 @@ function initHomeAddToCart() {
   if (!buttons || buttons.length === 0) return;
 
   buttons.forEach(btn => {
+    // Skip anchor tags to allow normal link behavior
+    if (btn.tagName.toLowerCase() === 'a') return;
+
     btn.addEventListener('click', function (e) {
       e.preventDefault();
       e.stopPropagation();
