@@ -788,12 +788,12 @@ document.addEventListener('DOMContentLoaded', function() {
     // Check if popup elements exist
     const popup1 = document.getElementById('discountPopup1');
     const popup2 = document.getElementById('discountPopup2');
-    
+
     if (!popup1 || !popup2) {
         console.error('Popup elements not found!');
         return;
     }
-    
+
     // Get all elements
     const smallIcon1 = document.getElementById('smallIcon1');
     const smallIcon2 = document.getElementById('smallIcon2');
@@ -802,24 +802,45 @@ document.addEventListener('DOMContentLoaded', function() {
     const laterBtn1 = document.getElementById('laterBtn1');
     const laterBtn2 = document.getElementById('laterBtn2');
     const claimBtns = document.querySelectorAll('.popup-buttons-container .btn-primary');
-    
+
     let iconTimer1, iconTimer2;
     let hasShownPopup1 = false;
     let hasShownPopup2 = false;
-    
-    // Initialize popups
+
+    // Initialize popups with IntersectionObserver for featured products section
     function initPopups() {
         // Hide all popups initially
         hideAllPopups();
-        
+
         // Hide small icons initially
         if (smallIcon1) smallIcon1.classList.remove('active');
         if (smallIcon2) smallIcon2.classList.remove('active');
-        
-        // Show first popup after 1.5 seconds
-        setTimeout(() => {
-            showPopup1();
-        }, 1500);
+
+        // Set up IntersectionObserver for featured products section
+        const featuredProductsSection = document.querySelector('.featured-products');
+        if (featuredProductsSection) {
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting && !hasShownPopup1) {
+                        // Show first popup after 4 seconds when section comes into view
+                        setTimeout(() => {
+                            showPopup1();
+                        }, 4000);
+                        observer.disconnect(); // Stop observing after first trigger
+                    }
+                });
+            }, {
+                threshold: 0.3, // Trigger when 30% of the section is visible
+                rootMargin: '0px 0px -100px 0px' // Trigger slightly before fully in view
+            });
+
+            observer.observe(featuredProductsSection);
+        } else {
+            // Fallback: Show popup after 4 seconds if section not found
+            setTimeout(() => {
+                showPopup1();
+            }, 4000);
+        }
     }
     
     // Show first popup
