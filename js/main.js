@@ -1094,4 +1094,49 @@ function updateHeaderCartCount() {
 // ensure header count is correct on load
 document.addEventListener('DOMContentLoaded', () => {
   updateHeaderCartCount();
+  initAboutParagraphFade();
 });
+
+// Mobile about section paragraph fade animation
+function initAboutParagraphFade() {
+  const aboutDescription = document.querySelector('.about-description');
+  if (!aboutDescription) return;
+
+  const paragraphs = aboutDescription.querySelectorAll('p');
+  if (paragraphs.length === 0) return;
+
+  // Only apply on mobile screens
+  if (window.innerWidth > 768) return;
+
+  let currentIndex = 0;
+
+  // Set initial state
+  paragraphs.forEach((p, index) => {
+    if (index === 0) {
+      p.classList.add('active');
+    }
+  });
+
+  // Function to fade paragraphs
+  function fadeParagraphs() {
+    // Fade out current paragraph
+    paragraphs[currentIndex].classList.remove('active');
+    paragraphs[currentIndex].classList.add('fade-out');
+
+    // Move to next paragraph
+    currentIndex = (currentIndex + 1) % paragraphs.length;
+
+    // After fade out, switch to next paragraph
+    setTimeout(() => {
+      paragraphs.forEach((p, index) => {
+        p.classList.remove('active', 'fade-out');
+        if (index === currentIndex) {
+          p.classList.add('active');
+        }
+      });
+    }, 800);
+  }
+
+  // Start cycling every 4 seconds
+  setInterval(fadeParagraphs, 4000);
+}
